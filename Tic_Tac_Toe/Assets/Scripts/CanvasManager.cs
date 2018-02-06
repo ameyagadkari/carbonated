@@ -32,7 +32,7 @@ namespace Assets.Scripts
             Assert.IsNotNull(PlayerToggle, "PlayerToggle not found");
             Assert.IsNotNull(MessageText, "MessageText not found");
 
-            Manager.Toggle += cellType =>
+            Manager.Toggle += (cellType, row, column) =>
             {
                 MessageText.text = cellType == CellType.Human ? HumanTurn : ComputerTurn;
             };

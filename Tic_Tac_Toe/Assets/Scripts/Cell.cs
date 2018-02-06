@@ -5,12 +5,15 @@ using UnityEngine.UI;
 
 namespace Assets.Scripts
 {
-    public enum CellType : short { Empty = 0, Human, Computer = ~Human }
+    [Flags]
+    public enum CellType : short { Empty = 0, Human = 1 << 0, Computer = 1 << 1 }
     public class Cell : MonoBehaviour, IPointerDownHandler
     {
         private Image _image;
         private CellType _myCellType;
         public Action Reset;
+        private int _row;
+        private int _column;
 
         public CellType MyCellType
         {
@@ -37,8 +40,11 @@ namespace Assets.Scripts
             }
         }
 
-        private void Awake()
+        public void Setup(int row, int column)
         {
+            _row = row;
+            _column = column;
+
             _image = GetComponent<Image>();
             transform.localScale = Vector3.one;
             Reset += () => { MyCellType = CellType.Empty; };
@@ -49,7 +55,7 @@ namespace Assets.Scripts
             if (Manager.Gamestate == Gamestate.Play && MyCellType == CellType.Empty)
             {
                 MyCellType = CellType.Human;
-                Manager.Toggle(CellType.Computer);
+                Manager.Toggle(CellType.Computer, _row, _column);
             }
         }
     }
