@@ -22,7 +22,7 @@ namespace Assets.Scripts
                 {
                     for (var column = 0; column < Numberofcolumns; column++)
                     {
-                        _cells[row, column].Reset.Invoke();
+                        _cells[row, column].Reset();
                     }
                 }
             };

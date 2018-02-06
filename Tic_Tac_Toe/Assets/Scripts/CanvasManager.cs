@@ -8,6 +8,8 @@ namespace Assets.Scripts
     {
         private const string HumanStarts= "Human Starts";
         private const string ComputerStarts = "Computer Starts";
+        private const string HumanTurn = "Human's Turn";
+        private const string ComputerTurn = "Computer's Turn";
         private const string DefaultMessage = "Toggle to change who starts and press Start button to play";
 
         public Button ExitButton;
@@ -29,6 +31,11 @@ namespace Assets.Scripts
             Assert.IsNotNull(PlayerToggleText, "PlayerToggle not found");
             Assert.IsNotNull(PlayerToggle, "PlayerToggle not found");
             Assert.IsNotNull(MessageText, "MessageText not found");
+
+            Manager.Toggle += cellType =>
+            {
+                MessageText.text = cellType == CellType.Human ? HumanTurn : ComputerTurn;
+            };
         }
 
         private void OnEnable()
@@ -54,7 +61,7 @@ namespace Assets.Scripts
             PlayerToggle.enabled = true;
             MessageText.text = DefaultMessage;
             StartButton.enabled = true;
-            Manager.Reset.Invoke();
+            Manager.Reset();
             PlayerToggleText.text = HumanStarts;
             PlayerToggle.isOn = true;
         }
@@ -62,8 +69,9 @@ namespace Assets.Scripts
         private void OnStartClicked()
         {
             PlayerToggle.enabled = false;
-            MessageText.text = Manager.IsHumanStarting ? "Human's Turn" : "Computer's Turn";
+            MessageText.text = Manager.IsHumanStarting ? HumanTurn : ComputerTurn;
             StartButton.enabled = false;
+            Manager.Set();
         }
 
         private void OnPlayerToggleValueChanged(bool value)

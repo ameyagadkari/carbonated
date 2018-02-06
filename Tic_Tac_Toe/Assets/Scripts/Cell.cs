@@ -1,11 +1,12 @@
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Assets.Scripts
 {
-    public enum CellType { Empty, Human, Computer }
-    public class Cell : MonoBehaviour
+    public enum CellType : short { Empty = 0, Human, Computer = ~Human }
+    public class Cell : MonoBehaviour, IPointerDownHandler
     {
         private Image _image;
         private CellType _myCellType;
@@ -41,6 +42,15 @@ namespace Assets.Scripts
             _image = GetComponent<Image>();
             transform.localScale = Vector3.one;
             Reset += () => { MyCellType = CellType.Empty; };
+        }
+
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            if (Manager.Gamestate == Gamestate.Play && MyCellType == CellType.Empty)
+            {
+                MyCellType = CellType.Human;
+                Manager.Toggle(CellType.Computer);
+            }
         }
     }
 }
