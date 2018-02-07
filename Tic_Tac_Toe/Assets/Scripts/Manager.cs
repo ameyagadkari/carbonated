@@ -4,11 +4,12 @@ using UnityEngine.Assertions;
 
 namespace Assets.Scripts
 {
-    public enum Gamestate : byte { NotStarted, Waiting, Play }
+    public enum Gamestate : byte { NotStarted, Waiting, Play, Ended }
     public class Manager : MonoBehaviour
     {
         public static Action Reset;
         public static Action Set;
+        public static Action End;
         public static Action<CellType, int, int> Toggle;
 
         public static Sprite XSprite { get; private set; }
@@ -156,6 +157,7 @@ namespace Assets.Scripts
                     }
                 }
             };
+            End += () => { Gamestate = Gamestate.Ended; };
         }
     }
 

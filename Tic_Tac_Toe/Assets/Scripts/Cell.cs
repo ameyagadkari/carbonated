@@ -37,6 +37,7 @@ namespace Assets.Scripts
                         break;
                     case CellType.Empty:
                         _image.sprite = null;
+                        Manager.NumberOfMovesDone--;
                         break;
                 }
             }

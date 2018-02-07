@@ -12,6 +12,9 @@ namespace Assets.Scripts
         private const string HumanTurn = "Human's Turn";
         private const string ComputerTurn = "Computer's Turn";
         private const string DefaultMessage = "Toggle to change who starts and press Start button to play";
+        private const string HumanWin = "Human Wins";
+        private const string ComputerWin = "Computer Wins";
+        private const string DrawMessage = "It's a Draw";
 
         public Button ExitButton;
         public Button ResetButton;
@@ -43,6 +46,14 @@ namespace Assets.Scripts
             Manager.Toggle += (previousCellType, row, column) =>
             {
                 MessageText.text = previousCellType == CellType.Human ? ComputerTurn : HumanTurn;
+            };
+            Manager.End += () =>
+            {
+                MessageText.text = Manager.XScore == Manager.OScore
+                    ? DrawMessage
+                    : Manager.XScore > Manager.OScore ?
+                        Manager.IsHumanStarting ? HumanWin : ComputerWin
+                      : Manager.IsHumanStarting ? ComputerWin : HumanWin;
             };
         }
 

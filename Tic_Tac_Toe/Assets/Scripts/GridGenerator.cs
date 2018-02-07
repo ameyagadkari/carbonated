@@ -8,6 +8,7 @@ namespace Assets.Scripts
     {
         private const int Numberofrows = 6;
         private const int Numberofcolumns = Numberofrows;
+        private const int TotalNumberOfMoves = Numberofrows * Numberofcolumns;
         private GameObject _cellPrefab;
         private Cell[,] _cells;
        
@@ -64,6 +65,18 @@ namespace Assets.Scripts
                 {
                     // get best move
                 }
+                /*for (var r = 0; r < Numberofrows; r++)
+                {
+                    for (var c = 0; c < Numberofcolumns; c++)
+                    {
+                        if (_cells[r, c].MyCellType == CellType.Empty)
+                        {
+                            _cells[r, c].MyCellType = CellType.Computer;
+                            Manager.Toggle(CellType.Computer, r, c);
+                            return;
+                        }
+                    }
+                }*/
             }
         }
 
@@ -196,7 +209,18 @@ namespace Assets.Scripts
                 }
                 return (_cells[row, column].MyCellType & _cells[r1, c1].MyCellType & _cells[r2, c2].MyCellType & _cells[r3, c3].MyCellType) != 0 ? 1 : 0;
             });
+            AssignScore(result, previousCellType);
+            if (Manager.NumberOfMovesDone == TotalNumberOfMoves)
+            {
+                if (Manager.End != null)
+                {
+                    Manager.End();
+                }
+            }
+        }
 
+        private static void AssignScore(int result, CellType previousCellType)
+        {
             if (Manager.IsHumanStarting)
             {
                 if (previousCellType == CellType.Human)
