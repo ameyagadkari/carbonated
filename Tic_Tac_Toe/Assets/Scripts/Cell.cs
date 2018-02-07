@@ -54,7 +54,9 @@ namespace Assets.Scripts
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            if (Manager.Gamestate == Gamestate.HumanTurn && MyCellType == CellType.Empty)
+            if (eventData.button == PointerEventData.InputButton.Left &&
+                Manager.Gamestate == Gamestate.HumanTurn &&
+                MyCellType == CellType.Empty)
             {
                 MyCellType = CellType.Human;
                 if (Manager.Toggle != null)

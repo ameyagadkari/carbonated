@@ -19,8 +19,8 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 224724389980115254}
-  - component: {fileID: 222578932626116036}
-  - component: {fileID: 114890200826183144}
+  - component: {fileID: 222725590332168776}
+  - component: {fileID: 114526155775121928}
   - component: {fileID: 114521744462205022}
   m_Layer: 5
   m_Name: Cell
@@ -40,7 +40,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2ff12d1b950ca74b8c82461959584cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114890200826183144
+--- !u!114 &114526155775121928
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -67,7 +67,7 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!222 &222578932626116036
+--- !u!222 &222725590332168776
 CanvasRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}

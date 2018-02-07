@@ -924,6 +924,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 506b0900cfb9b1243a6dfee185ea7875, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  EventSystem: {fileID: 0}
 --- !u!4 &467785148
 Transform:
   m_ObjectHideFlags: 0
@@ -1188,7 +1189,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1441,7 +1442,7 @@ GameObject:
   - component: {fileID: 1077107765}
   m_Layer: 0
   m_Name: EventSystem
-  m_TagString: Untagged
+  m_TagString: ES
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
