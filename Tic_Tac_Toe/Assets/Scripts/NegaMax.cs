@@ -30,6 +30,7 @@ namespace Assets.Scripts
             var maxScore = int.MinValue + 1;
             var bestRow = -1;
             var bestCol = -1;
+            var returnAlpha = false;
 
             if (nextMoves.Count == 0 || depth == 0)
             {
@@ -46,13 +47,13 @@ namespace Assets.Scripts
                     if (score > maxScore)
                     {
                         maxScore = score;
+                        bestRow = move.Row;
+                        bestCol = move.Column;
                     }
 
                     if (score > alpha)
                     {
                         alpha = score;
-                        bestRow = move.Row;
-                        bestCol = move.Column;
                     }
 
                     // Undo Move
@@ -61,11 +62,13 @@ namespace Assets.Scripts
                     // cut-off
                     if (alpha >= beta)
                     {
+                        returnAlpha = true;
                         break;
                     }
                 }
             }
-            return new[] { alpha, bestRow, bestCol };
+
+            return new[] { returnAlpha ? alpha : maxScore, bestRow, bestCol };
         }
 
         private void GenerateMoves(out List<Index> nextMoves)
