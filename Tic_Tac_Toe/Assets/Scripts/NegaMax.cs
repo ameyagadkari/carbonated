@@ -120,8 +120,6 @@ namespace Assets.Scripts
         private int EvaluateLine(int startRow, int startColumn, Direction direction)
         {
             var index = new Index[NumberOfOtherCells];
-            /*int r1, c1, r2, c2, r3, c3;
-            r1 = c1 = r2 = c2 = r3 = c3 = -1;*/
             switch (direction)
             {
                 case Direction.Vertical:
@@ -169,12 +167,12 @@ namespace Assets.Scripts
             {
                 if (_cells[index[i].Row, index[i].Column].MyCellType == CellType.Human)
                 {
-                    // If cell 1 is human and previous cell is either human or empty
+                    // If cell 1 is human and previous cells are either human or empty
                     if (score < 0)
                     {
                         score *= 10;
                     }
-                    // If cell 1 is computer and previous cell is either computer or empty
+                    // If cell 1 is computer and previous cells are either computer or empty
                     else if (score > 0)
                     {
                         return 0;
@@ -187,12 +185,12 @@ namespace Assets.Scripts
                 }
                 else if (_cells[index[i].Row, index[i].Column].MyCellType == CellType.Computer)
                 {
-                    // If cell 1 is human and previous cell is either human or empty
+                    // If cell 1 is human and previous cells are either human or empty
                     if (score < 0)
                     {
                         return 0;
                     }
-                    // If cell 1 is computer and previous cell is either computer or empty
+                    // If cell 1 is computer and previous cells are either computer or empty
                     else if (score > 0)
                     {
                         score *= 10;

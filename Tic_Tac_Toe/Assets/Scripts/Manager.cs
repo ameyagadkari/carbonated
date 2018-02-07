@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.EventSystems;
 
 namespace Assets.Scripts
 {
@@ -122,11 +121,11 @@ namespace Assets.Scripts
 
     };
 
-        public GameObject EventSystem;
+        private GameObject _eventSystem;
 
         private void Awake()
         {
-            EventSystem = GameObject.FindGameObjectWithTag("ES");
+            _eventSystem = GameObject.FindGameObjectWithTag("ES");
             IsHumanStarting = true;
             Gamestate = Gamestate.NotStarted;
             XSprite = Resources.Load<Sprite>("Sprites/X");
@@ -136,7 +135,7 @@ namespace Assets.Scripts
             Reset += () =>
             {
                 IsHumanStarting = true;
-                EventSystem.SetActive(true);
+                _eventSystem.SetActive(true);
                 Gamestate = Gamestate.NotStarted;
                 if (CanvasManager.OnScoreChanged != null)
                 {
@@ -147,7 +146,7 @@ namespace Assets.Scripts
             Toggle += (previousCellType, row, column) =>
             {
                 Gamestate = previousCellType == CellType.Computer ? Gamestate.HumanTurn : Gamestate.ComputerTurn;
-                EventSystem.SetActive(Gamestate != Gamestate.ComputerTurn);
+                _eventSystem.SetActive(Gamestate == Gamestate.HumanTurn);
             };
             Set += () =>
             {
@@ -166,7 +165,7 @@ namespace Assets.Scripts
             End += () =>
             {
                 Gamestate = Gamestate.Ended;
-                EventSystem.SetActive(true);
+                _eventSystem.SetActive(true);
             };
         }
     }
