@@ -73,7 +73,8 @@ namespace Assets.Scripts
 
         private IEnumerator BestMoveCoroutine()
         {
-            yield return null;
+            yield return new WaitForEndOfFrame(); // Required
+            yield return new WaitForEndOfFrame(); // Better safe than sorry
             var result = _negaMax.GetBestMove(MaxDepth);
             //print("Score for move:" + result[0]);  
             _cells[result[1], result[2]].MyCellType = CellType.Computer;
