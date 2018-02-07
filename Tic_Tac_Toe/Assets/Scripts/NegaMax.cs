@@ -1,17 +1,87 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Scripts
 {
-    public class MiniMax
+    public class NegaMax
     {
         private const int NumberOfSubBoards = 9;
         private const int NumberOfLinesInSubBoard = 4;
         private enum Direction { Vertical, Horizontal, Diagonal, ReverseDiagonal }
         private readonly Cell[,] _cells;
+        private readonly int[] _sign = { 1, -1 };//0 is c, 1 is h
 
-        public MiniMax(Cell[,] cells)
+        public NegaMax(Cell[,] cells)
         {
             _cells = cells;
+        }
+        public int[] GetBestMove(int depth)
+        {
+            var result = Negamax(depth, 0, int.MinValue + 1, int.MaxValue - 1);
+            return result;// bestscore, row, col
+        }
+
+        private int[] Negamax(int depth, int color, int alpha, int beta)
+        {
+            // Generate possible next moves in a List of int[2] of {row, col}.
+            List<Index> nextMoves;
+            GenerateMoves(out nextMoves);
+
+            var maxScore = int.MinValue + 1;
+            var bestRow = -1;
+            var bestCol = -1;
+
+            if (nextMoves.Count == 0 || depth == 0)
+            {
+                return new[] { _sign[color] * EvaluateBoard(), bestRow, bestCol };
+            }
+
+            foreach (var move in nextMoves)
+            {
+                if (_cells[move.Row, move.Column].MyCellType == CellType.Empty)
+                {
+                    // Make Move
+                    _cells[move.Row, move.Column].MyCellType = color == 0 ? CellType.Computer : CellType.Human;
+                    var score = -Negamax(depth - 1, 1 - color, -beta, -alpha)[0];
+                    if (score > maxScore)
+                    {
+                        maxScore = score;
+                    }
+
+                    if (score > alpha)
+                    {
+                        alpha = score;
+                        bestRow = move.Row;
+                        bestCol = move.Column;
+                    }
+
+                    // Undo Move
+                    _cells[move.Row, move.Column].MyCellType = CellType.Empty;
+
+                    // cut-off
+                    if (alpha >= beta)
+                    {
+                        break;
+                    }
+                }
+            }
+            return new[] { alpha, bestRow, bestCol };
+        }
+
+        private void GenerateMoves(out List<Index> nextMoves)
+        {
+            nextMoves = new List<Index>();
+
+            for (var row = 0; row < 6; ++row)
+            {
+                for (var column = 0; column < 6; ++column)
+                {
+                    if (_cells[row, column].MyCellType == CellType.Empty)
+                    {
+                        nextMoves.Add(new Index { Row = row, Column = column });
+                    }
+                }
+            }
         }
 
         private int EvaluateBoard()
@@ -24,7 +94,6 @@ namespace Assets.Scripts
                     startRow++;
                     startColumn = 0;
                 }
-                //Debug.Log("(" + startRow + "," + startColumn + ")");
                 score += EvaluateSubBoard(startRow, startColumn);
             }
             return score;
@@ -188,7 +257,7 @@ namespace Assets.Scripts
                     score *= 10;
                 }
                 // If cell 1 is computer and cell 2 is computer or empty and cell 3 is computer or empty
-                else if (score > 0)
+                else if (score > 1)
                 {
                     return 0;
                 }
@@ -206,7 +275,7 @@ namespace Assets.Scripts
                     return 0;
                 }
                 // If cell 1 is computer and cell 2 is computer or empty and cell 3 is computer or empty
-                else if (score > 0)
+                else if (score > 1)
                 {
                     score *= 10;
                 }
@@ -219,5 +288,11 @@ namespace Assets.Scripts
 
             return score;
         }
+    }
+
+    internal struct Index
+    {
+        internal int Row;
+        internal int Column;
     }
 }

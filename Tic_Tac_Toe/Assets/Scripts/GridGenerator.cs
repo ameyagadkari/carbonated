@@ -11,7 +11,7 @@ namespace Assets.Scripts
         private const int TotalNumberOfMoves = Numberofrows * Numberofcolumns;
         private GameObject _cellPrefab;
         private Cell[,] _cells;
-        private MiniMax _miniMax;
+        private NegaMax _negaMax;
        
 
         private void Awake()
@@ -34,7 +34,7 @@ namespace Assets.Scripts
             };
             Manager.Toggle += CalculateScore;
             Manager.Toggle += ComputerPlays;
-            _miniMax = new MiniMax(_cells);
+            _negaMax = new NegaMax(_cells);
         }
 
         private void Start()
@@ -65,20 +65,11 @@ namespace Assets.Scripts
                 }
                 else
                 {
-                    // get best move
+                    var result = _negaMax.GetBestMove(4);
+                    print("Score for move:" + result[0]);
+                    _cells[result[1], result[2]].MyCellType = CellType.Computer;
+                    Manager.Toggle(CellType.Computer, result[1], result[2]);
                 }
-                /*for (var r = 0; r < Numberofrows; r++)
-                {
-                    for (var c = 0; c < Numberofcolumns; c++)
-                    {
-                        if (_cells[r, c].MyCellType == CellType.Empty)
-                        {
-                            _cells[r, c].MyCellType = CellType.Computer;
-                            Manager.Toggle(CellType.Computer, r, c);
-                            return;
-                        }
-                    }
-                }*/
             }
         }
 
