@@ -4,7 +4,7 @@ using UnityEngine.Assertions;
 
 namespace Assets.Scripts
 {
-    public enum Gamestate : byte { NotStarted, Waiting, Play, Ended }
+    public enum Gamestate : byte { NotStarted, ComputerTurn, HumanTurn, Ended }
     public class Manager : MonoBehaviour
     {
         public static Action Reset;
@@ -141,14 +141,14 @@ namespace Assets.Scripts
             };
             Toggle += (previousCellType, row, column) =>
             {
-                Gamestate = previousCellType == CellType.Computer ? Gamestate.Play : Gamestate.Waiting;
+                Gamestate = previousCellType == CellType.Computer ? Gamestate.HumanTurn : Gamestate.ComputerTurn;
             };
             Set += () =>
             {
                 NumberOfMovesDone = 0;
                 XScore = 0;
                 OScore = 0;
-                Gamestate = IsHumanStarting ? Gamestate.Play : Gamestate.Waiting;
+                Gamestate = IsHumanStarting ? Gamestate.HumanTurn : Gamestate.ComputerTurn;
                 if (!IsHumanStarting)
                 {
                     if (Toggle != null)

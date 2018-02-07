@@ -5,8 +5,7 @@ using UnityEngine.UI;
 
 namespace Assets.Scripts
 {
-    [Flags]
-    public enum CellType : short { Empty = 0, Human = 1 << 0, Computer = 1 << 1 }
+    public enum CellType : short { Empty, Human, Computer = ~Human }
     public class Cell : MonoBehaviour, IPointerDownHandler
     {
         private Image _image;
@@ -55,7 +54,7 @@ namespace Assets.Scripts
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            if (Manager.Gamestate == Gamestate.Play && MyCellType == CellType.Empty)
+            if (Manager.Gamestate == Gamestate.HumanTurn && MyCellType == CellType.Empty)
             {
                 MyCellType = CellType.Human;
                 if (Manager.Toggle != null)

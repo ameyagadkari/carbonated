@@ -55,7 +55,7 @@ namespace Assets.Scripts
 
         private void ComputerPlays(CellType previousCellType, int row, int column)
         {
-            if (previousCellType == CellType.Human && Manager.Gamestate == Gamestate.Waiting)
+            if (previousCellType == CellType.Human && Manager.Gamestate == Gamestate.ComputerTurn)
             {
                 if (Manager.NumberOfMovesDone == 0)
                 {
