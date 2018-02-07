@@ -10,7 +10,6 @@ namespace Assets.Scripts
         private const int NumberOfOtherCells = 3;
         private enum Direction { Vertical, Horizontal, Diagonal, ReverseDiagonal }
         private readonly Cell[,] _cells;
-        private readonly int[] _sign = { 1, -1 };//0 is c, 1 is h
 
         public NegaMax(Cell[,] cells)
         {
@@ -18,11 +17,11 @@ namespace Assets.Scripts
         }
         public int[] GetBestMove(int depth)
         {
-            var result = Negamax(depth, 0, int.MinValue + 1, int.MaxValue - 1);
+            var result = Negamax(depth, CellType.Computer, int.MinValue + 1, int.MaxValue - 1);
             return result;
         }
 
-        private int[] Negamax(int depth, int color, int alpha, int beta)
+        private int[] Negamax(int depth, CellType cellType, int alpha, int beta)
         {
             List<Index> nextMoves;
             GenerateMoves(out nextMoves);
@@ -34,7 +33,7 @@ namespace Assets.Scripts
 
             if (nextMoves.Count == 0 || depth == 0)
             {
-                return new[] { _sign[color] * EvaluateBoard(), bestRow, bestCol };
+                return new[] {(cellType == CellType.Computer ? 1 : -1) * EvaluateBoard(), bestRow, bestCol};
             }
 
             foreach (var move in nextMoves)
@@ -42,8 +41,8 @@ namespace Assets.Scripts
                 if (_cells[move.Row, move.Column].MyCellType == CellType.Empty)
                 {
                     // Make Move
-                    _cells[move.Row, move.Column].MyCellType = color == 0 ? CellType.Computer : CellType.Human;
-                    var score = -Negamax(depth - 1, 1 - color, -beta, -alpha)[0];
+                    _cells[move.Row, move.Column].MyCellType = cellType;
+                    var score = -Negamax(depth - 1, ~cellType, -beta, -alpha)[0];
                     if (score > maxScore)
                     {
                         maxScore = score;
