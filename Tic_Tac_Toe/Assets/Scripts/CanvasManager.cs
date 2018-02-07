@@ -1,12 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Assertions;
+using UnityEngine.Events;
 
 namespace Assets.Scripts
 {
     public class CanvasManager : MonoBehaviour
     {
-        private const string HumanStarts= "Human Starts";
+        private const string HumanStarts = "Human Starts";
         private const string ComputerStarts = "Computer Starts";
         private const string HumanTurn = "Human's Turn";
         private const string ComputerTurn = "Computer's Turn";
@@ -21,6 +22,9 @@ namespace Assets.Scripts
         public Toggle PlayerToggle;
         public Text MessageText;
 
+        public class ScoreEvent : UnityEvent<int, bool> { }
+        public static ScoreEvent OnScoreChanged;
+
         private void Awake()
         {
             Assert.IsNotNull(ExitButton, "ExitButton not found");
@@ -32,9 +36,13 @@ namespace Assets.Scripts
             Assert.IsNotNull(PlayerToggle, "PlayerToggle not found");
             Assert.IsNotNull(MessageText, "MessageText not found");
 
-            Manager.Toggle += (cellType, row, column) =>
+            if (OnScoreChanged == null)
             {
-                MessageText.text = cellType == CellType.Human ? HumanTurn : ComputerTurn;
+                OnScoreChanged = new ScoreEvent();
+            }
+            Manager.Toggle += (previousCellType, row, column) =>
+            {
+                MessageText.text = previousCellType == CellType.Human ? ComputerTurn : HumanTurn;
             };
         }
 
@@ -44,11 +52,16 @@ namespace Assets.Scripts
             ResetButton.onClick.AddListener(OnResetClicked);
             StartButton.onClick.AddListener(OnStartClicked);
             PlayerToggle.onValueChanged.AddListener(OnPlayerToggleValueChanged);
+            OnScoreChanged.AddListener(OnScoreValueChanged);
         }
 
         private void OnDisable()
         {
             ExitButton.onClick.RemoveListener(OnExitClicked);
+            ResetButton.onClick.RemoveListener(OnResetClicked);
+            StartButton.onClick.RemoveListener(OnStartClicked);
+            PlayerToggle.onValueChanged.RemoveListener(OnPlayerToggleValueChanged);
+            OnScoreChanged.RemoveListener(OnScoreValueChanged);
         }
 
         private static void OnExitClicked()
@@ -61,7 +74,10 @@ namespace Assets.Scripts
             PlayerToggle.enabled = true;
             MessageText.text = DefaultMessage;
             StartButton.enabled = true;
-            Manager.Reset();
+            if (Manager.Reset != null)
+            {
+                Manager.Reset();
+            }
             PlayerToggleText.text = HumanStarts;
             PlayerToggle.isOn = true;
         }
@@ -71,13 +87,28 @@ namespace Assets.Scripts
             PlayerToggle.enabled = false;
             MessageText.text = Manager.IsHumanStarting ? HumanTurn : ComputerTurn;
             StartButton.enabled = false;
-            Manager.Set();
+            if (Manager.Set != null)
+            {
+                Manager.Set();
+            }
         }
 
         private void OnPlayerToggleValueChanged(bool value)
         {
             Manager.IsHumanStarting = value;
             PlayerToggleText.text = value ? HumanStarts : ComputerStarts;
+        }
+
+        private void OnScoreValueChanged(int score, bool isXscore)
+        {
+            if (isXscore)
+            {
+                XScoreText.text = "X:" + score;
+            }
+            else
+            {
+                OScoreText.text = "O:" + score;
+            }
         }
     }
 }

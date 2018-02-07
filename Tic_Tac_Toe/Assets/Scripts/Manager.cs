@@ -17,7 +17,9 @@ namespace Assets.Scripts
         public static bool IsHumanStarting { get; set; }
 
         public static Gamestate Gamestate { get; private set; }
-
+        public static int XScore { get; set; }
+        public static int OScore { get; set; }
+        public static int NumberOfMovesDone { get; set; }
         public static readonly CellCheckHints[,][] Patterns =
         {
             //Row 0
@@ -130,9 +132,30 @@ namespace Assets.Scripts
             {
                 IsHumanStarting = true;
                 Gamestate = Gamestate.NotStarted;
+                if (CanvasManager.OnScoreChanged != null)
+                {
+                    CanvasManager.OnScoreChanged.Invoke(0, true);
+                    CanvasManager.OnScoreChanged.Invoke(0, false);
+                }
             };
-            Set += () => { Gamestate = IsHumanStarting ? Gamestate.Play : Gamestate.Waiting; };
-            Toggle += (cellType, row, column) => { /*Gamestate = cellType == CellType.Computer ? Gamestate.Waiting : Gamestate.Play;*/ };
+            Toggle += (previousCellType, row, column) =>
+            {
+                Gamestate = previousCellType == CellType.Computer ? Gamestate.Play : Gamestate.Waiting;
+            };
+            Set += () =>
+            {
+                NumberOfMovesDone = 0;
+                XScore = 0;
+                OScore = 0;
+                Gamestate = IsHumanStarting ? Gamestate.Play : Gamestate.Waiting;
+                if (!IsHumanStarting)
+                {
+                    if (Toggle != null)
+                    {
+                        Toggle(CellType.Human, -1, -1);
+                    }
+                }
+            };
         }
     }
 

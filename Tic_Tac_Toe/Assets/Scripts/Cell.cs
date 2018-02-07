@@ -10,11 +10,11 @@ namespace Assets.Scripts
     public class Cell : MonoBehaviour, IPointerDownHandler
     {
         private Image _image;
-        private CellType _myCellType;
         public Action Reset;
         private int _row;
         private int _column;
 
+        private CellType _myCellType;
         public CellType MyCellType
         {
             get { return _myCellType; }
@@ -27,11 +27,13 @@ namespace Assets.Scripts
                         _image.sprite = Manager.IsHumanStarting
                             ? Manager.XSprite
                             : Manager.OSprite;
+                        Manager.NumberOfMovesDone++;
                         break;
                     case CellType.Computer:
                         _image.sprite = Manager.IsHumanStarting
                             ? Manager.OSprite
                             : Manager.XSprite;
+                        Manager.NumberOfMovesDone++;
                         break;
                     case CellType.Empty:
                         _image.sprite = null;
@@ -55,7 +57,10 @@ namespace Assets.Scripts
             if (Manager.Gamestate == Gamestate.Play && MyCellType == CellType.Empty)
             {
                 MyCellType = CellType.Human;
-                Manager.Toggle(CellType.Computer, _row, _column);
+                if (Manager.Toggle != null)
+                {
+                    Manager.Toggle(CellType.Human, _row, _column);
+                }
             }
         }
     }

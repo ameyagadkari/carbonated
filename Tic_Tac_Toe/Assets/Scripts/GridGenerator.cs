@@ -10,7 +10,7 @@ namespace Assets.Scripts
         private const int Numberofcolumns = Numberofrows;
         private GameObject _cellPrefab;
         private Cell[,] _cells;
-
+       
 
         private void Awake()
         {
@@ -23,11 +23,15 @@ namespace Assets.Scripts
                 {
                     for (var column = 0; column < Numberofcolumns; column++)
                     {
-                        _cells[row, column].Reset();
+                        if (_cells[row, column].Reset != null)
+                        {
+                            _cells[row, column].Reset();
+                        }
                     }
                 }
             };
             Manager.Toggle += CalculateScore;
+            Manager.Toggle += ComputerPlays;
         }
 
         private void Start()
@@ -45,8 +49,28 @@ namespace Assets.Scripts
             }
         }
 
-        private void CalculateScore(CellType cellType, int row, int column)
+        private void ComputerPlays(CellType previousCellType, int row, int column)
         {
+            if (previousCellType == CellType.Human && Manager.Gamestate == Gamestate.Waiting)
+            {
+                if (Manager.NumberOfMovesDone == 0)
+                {
+                    var r = Random.Range(0, Numberofrows);
+                    var c = Random.Range(0, Numberofcolumns);
+                    _cells[r, c].MyCellType = CellType.Computer;
+                    Manager.Toggle(CellType.Computer, r, c);
+                }
+                else
+                {
+                    // get best move
+                }
+            }
+        }
+
+        private void CalculateScore(CellType previousCellType, int row, int column)
+        {
+            if (row == -1 || column == -1) return;
+            if (Manager.NumberOfMovesDone < 7) return;
             var cellHintArray = Manager.Patterns[row, column];
             int r1, c1, r2, c2, r3, c3;
             r1 = c1 = r2 = c2 = r3 = c3 = -1;
@@ -172,7 +196,45 @@ namespace Assets.Scripts
                 }
                 return (_cells[row, column].MyCellType & _cells[r1, c1].MyCellType & _cells[r2, c2].MyCellType & _cells[r3, c3].MyCellType) != 0 ? 1 : 0;
             });
-            print(result);
+
+            if (Manager.IsHumanStarting)
+            {
+                if (previousCellType == CellType.Human)
+                {
+                    Manager.XScore += result;
+                    if (CanvasManager.OnScoreChanged != null)
+                    {
+                        CanvasManager.OnScoreChanged.Invoke(Manager.XScore, true);
+                    }
+                }
+                else
+                {
+                    Manager.OScore += result;
+                    if (CanvasManager.OnScoreChanged != null)
+                    {
+                        CanvasManager.OnScoreChanged.Invoke(Manager.OScore, false);
+                    }
+                }
+            }
+            else
+            {
+                if (previousCellType == CellType.Human)
+                {
+                    Manager.OScore += result;
+                    if (CanvasManager.OnScoreChanged != null)
+                    {
+                        CanvasManager.OnScoreChanged.Invoke(Manager.OScore, false);
+                    }
+                }
+                else
+                {
+                    Manager.XScore += result;
+                    if (CanvasManager.OnScoreChanged != null)
+                    {
+                        CanvasManager.OnScoreChanged.Invoke(Manager.XScore, true);
+                    }
+                }
+            }
         }
     }
 }
