@@ -11,6 +11,7 @@ namespace Assets.Scripts
         private const int TotalNumberOfMoves = Numberofrows * Numberofcolumns;
         private GameObject _cellPrefab;
         private Cell[,] _cells;
+        private MiniMax _miniMax;
        
 
         private void Awake()
@@ -33,6 +34,7 @@ namespace Assets.Scripts
             };
             Manager.Toggle += CalculateScore;
             Manager.Toggle += ComputerPlays;
+            _miniMax = new MiniMax(_cells);
         }
 
         private void Start()
