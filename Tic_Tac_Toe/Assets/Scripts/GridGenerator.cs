@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -6,13 +7,13 @@ namespace Assets.Scripts
 {
     public class GridGenerator : MonoBehaviour
     {
+        private const int MaxDepth = 4;
         private const int Numberofrows = 6;
         private const int Numberofcolumns = Numberofrows;
         private const int TotalNumberOfMoves = Numberofrows * Numberofcolumns;
         private GameObject _cellPrefab;
         private Cell[,] _cells;
         private NegaMax _negaMax;
-       
 
         private void Awake()
         {
@@ -65,12 +66,18 @@ namespace Assets.Scripts
                 }
                 else
                 {
-                    var result = _negaMax.GetBestMove(4);
-                    print("Score for move:" + result[0]);
-                    _cells[result[1], result[2]].MyCellType = CellType.Computer;
-                    Manager.Toggle(CellType.Computer, result[1], result[2]);
+                    StartCoroutine(BestMoveCoroutine());
                 }
             }
+        }
+
+        private IEnumerator BestMoveCoroutine()
+        {
+            yield return null;
+            var result = _negaMax.GetBestMove(MaxDepth);
+            //print("Score for move:" + result[0]);  
+            _cells[result[1], result[2]].MyCellType = CellType.Computer;
+            Manager.Toggle(CellType.Computer, result[1], result[2]);
         }
 
         private void CalculateScore(CellType previousCellType, int row, int column)
