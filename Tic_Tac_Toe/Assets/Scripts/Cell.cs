@@ -5,7 +5,8 @@ using UnityEngine.UI;
 
 namespace Assets.Scripts
 {
-    public enum CellType : short { Empty, Human, Computer = ~Human }
+    [Flags]
+    public enum CellType : sbyte { Empty, Human, Computer = ~Human }
     public class Cell : MonoBehaviour, IPointerDownHandler
     {
         private Image _image;
